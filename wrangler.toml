@@ -8,10 +8,10 @@ compatibility_date = "2025-06-01"
 directory = "./site"
 binding = "ASSETS"
 
-# Target URL of each project's Worker. Set these to the deployed Workers' URLs
-# (e.g. https://rp2040sharp-docs.<your-subdomain>.workers.dev, or a custom domain).
-# Until set correctly, the hub still deploys and serves the landing; the sub-paths
-# resolve once these point at live deployments.
+# Target URL of each project's docs deployment. The projects are Cloudflare Pages
+# projects (Sphinx needs a Python build), so these are their *.pages.dev URLs.
+# Until they go live, the hub still deploys and serves the landing; the sub-paths
+# resolve once these point at live deployments. Override per-environment if needed.
 [vars]
-PYMCU_DOCS_URL = "https://pymcu-docs.workers.dev"
-RP2040SHARP_DOCS_URL = "https://rp2040sharp-docs.workers.dev"
+PYMCU_DOCS_URL = "https://pymcu-docs.pages.dev"
+RP2040SHARP_DOCS_URL = "https://rp2040sharp-docs.pages.dev"

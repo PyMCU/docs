@@ -5,51 +5,52 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>PyMCU — Documentation</title>
 <meta name="description" content="PyMCU — Python to bare-metal firmware, and the tools around it. Documentation for the PyMCU compiler and the RP2040Sharp emulator." />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0f12'/%3E%3Crect x='9' y='9' width='14' height='14' rx='2' fill='none' stroke='%23ff8c3b' stroke-width='2'/%3E%3Cpath d='M6 13h3M6 19h3M23 13h3M23 19h3M13 6v3M19 6v3M13 23v3M19 23v3' stroke='%23ff8c3b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --bg: #0b0f12;
-    --bg-grid: rgba(120, 150, 170, 0.045);
-    --panel: #11161b;
-    --surface: #141a20;
-    --surface-hi: #1a222a;
-    --border: #222c35;
-    --border-hi: #324151;
-    --text: #e7edf3;
-    --text-dim: #9aa8b4;
-    --text-faint: #5d6b77;
-    --accent: #ff8c3b;
-    --accent-deep: #ff7a18;
-    --accent-soft: rgba(255, 140, 59, 0.13);
-    --accent-line: rgba(255, 140, 59, 0.35);
-    --cool: #58cfc4;
-    --cool-soft: rgba(88, 207, 196, 0.12);
-    --glow: radial-gradient(60% 70% at 50% 0%, rgba(255, 140, 59, 0.10), transparent 70%);
-    --shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 18px 40px -20px rgba(0,0,0,0.8);
+    /* PyMCU brand palette (matches the marketing site) */
+    --bg: #030620;
+    --bg-grid: rgba(120, 150, 220, 0.05);
+    --panel: #0a0e2e;
+    --surface: #0c1135;
+    --surface-hi: #111640;
+    --border: #1c2250;
+    --border-hi: #2c3470;
+    --text: #e5ecf6;
+    --text-dim: rgba(229, 236, 246, 0.66);
+    --text-faint: rgba(229, 236, 246, 0.40);
+    --accent: #2f7bff;
+    --accent-deep: #0161ef;
+    --accent-soft: rgba(47, 123, 255, 0.14);
+    --accent-line: rgba(47, 123, 255, 0.38);
+    --cool: #5aa9e6;
+    --cool-soft: rgba(90, 169, 230, 0.14);
+    --glow: radial-gradient(60% 70% at 50% 0%, rgba(1, 97, 239, 0.18), transparent 70%);
+    --shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 18px 44px -22px rgba(0,0,0,0.85);
     color-scheme: dark;
   }
   [data-theme="light"] {
-    --bg: #f3efe6;
-    --bg-grid: rgba(40, 50, 60, 0.05);
-    --panel: #ece7db;
-    --surface: #fbf9f3;
-    --surface-hi: #fffdf8;
-    --border: #ddd5c4;
-    --border-hi: #c8bda6;
-    --text: #171c21;
-    --text-dim: #56616b;
-    --text-faint: #8a8473;
-    --accent: #d2601a;
-    --accent-deep: #b84e12;
-    --accent-soft: rgba(210, 96, 26, 0.10);
-    --accent-line: rgba(210, 96, 26, 0.35);
-    --cool: #11756c;
-    --cool-soft: rgba(17, 117, 108, 0.10);
-    --glow: radial-gradient(60% 70% at 50% 0%, rgba(210, 96, 26, 0.08), transparent 70%);
-    --shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 16px 36px -22px rgba(80,60,30,0.4);
+    --bg: #ffffff;
+    --bg-grid: rgba(1, 97, 239, 0.06);
+    --panel: #f4f7fd;
+    --surface: #ffffff;
+    --surface-hi: #f7faff;
+    --border: #e3e9f5;
+    --border-hi: #c6d6f0;
+    --text: #101010;
+    --text-dim: rgba(16, 16, 16, 0.66);
+    --text-faint: rgba(16, 16, 16, 0.42);
+    --accent: #0161ef;
+    --accent-deep: #0154cf;
+    --accent-soft: rgba(1, 97, 239, 0.09);
+    --accent-line: rgba(1, 97, 239, 0.30);
+    --cool: #2a7cb5;
+    --cool-soft: rgba(42, 124, 181, 0.10);
+    --glow: radial-gradient(60% 70% at 50% 0%, rgba(1, 97, 239, 0.07), transparent 70%);
+    --shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 16px 36px -22px rgba(1,97,239,0.18);
     color-scheme: light;
   }
 
@@ -59,13 +60,12 @@
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    font-family: "Inter", system-ui, sans-serif;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
   }
-  /* PCB blueprint grid + warm glow */
   body::before {
     content: "";
     position: fixed;
@@ -90,77 +90,41 @@
   a { color: inherit; }
   .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
 
-  :focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 3px;
-    border-radius: 4px;
-  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
 
   .wrap { width: min(1080px, 92vw); margin: 0 auto; }
 
   /* ── Header ───────────────────────────────────────────── */
   header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    position: sticky; top: 0; z-index: 10;
     backdrop-filter: blur(10px);
-    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
     border-bottom: 1px solid var(--border);
   }
-  .nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-  }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 62px; }
   .brand {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
+    display: inline-flex; align-items: center; gap: 10px;
     font-family: "IBM Plex Mono", monospace;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    text-decoration: none;
-    color: var(--text);
+    font-weight: 600; letter-spacing: -0.01em;
+    text-decoration: none; color: var(--text);
   }
-  .brand .chip {
-    width: 22px; height: 22px; flex: none;
-    border: 1.8px solid var(--accent);
-    border-radius: 5px;
-    position: relative;
-  }
-  .brand .chip::before,
-  .brand .chip::after {
-    content: "";
-    position: absolute;
-    background: var(--accent);
-  }
-  .brand .chip::before { width: 1.8px; height: 5px; left: 50%; top: -6px; transform: translateX(-50%); box-shadow: -6px 0 var(--accent), 6px 0 var(--accent); }
-  .brand .chip::after  { width: 1.8px; height: 5px; left: 50%; bottom: -6px; transform: translateX(-50%); box-shadow: -6px 0 var(--accent), 6px 0 var(--accent); }
+  .brand .mark { width: 26px; height: 26px; flex: none; color: var(--accent); }
   .brand b { color: var(--accent); font-weight: 600; }
   .brand .slash { color: var(--text-faint); }
   .nav-right { display: flex; align-items: center; gap: 8px; }
   .nav-link {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.82rem;
-    color: var(--text-dim);
-    text-decoration: none;
-    padding: 7px 11px;
-    border-radius: 7px;
+    font-family: "IBM Plex Mono", monospace; font-size: 0.82rem;
+    color: var(--text-dim); text-decoration: none;
+    padding: 7px 11px; border-radius: 7px;
     transition: color .15s, background .15s;
   }
   .nav-link:hover { color: var(--text); background: var(--surface); }
-  .nav-link.gh { display: inline-flex; align-items: center; gap: 6px; }
   @media (max-width: 620px) { .nav-link.hide-sm { display: none; } }
 
   .toggle {
-    width: 34px; height: 34px;
-    display: grid; place-items: center;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text-dim);
-    cursor: pointer;
+    width: 34px; height: 34px; display: grid; place-items: center;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text-dim); cursor: pointer;
     transition: border-color .15s, color .15s, transform .15s;
   }
   .toggle:hover { color: var(--accent); border-color: var(--border-hi); }
@@ -172,192 +136,84 @@
   /* ── Hero ─────────────────────────────────────────────── */
   .hero { padding: clamp(56px, 11vh, 120px) 0 clamp(40px, 6vh, 64px); }
   .eyebrow {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.76rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent);
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
+    font-family: "IBM Plex Mono", monospace; font-size: 0.76rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent);
+    display: inline-flex; align-items: center; gap: 9px;
   }
-  .eyebrow::before {
-    content: "";
-    width: 26px; height: 1px;
-    background: var(--accent-line);
-  }
+  .eyebrow::before { content: ""; width: 26px; height: 1px; background: var(--accent-line); }
   h1 {
-    font-size: clamp(2.3rem, 6.2vw, 4.1rem);
-    line-height: 1.04;
-    letter-spacing: -0.03em;
-    font-weight: 700;
-    margin: 22px 0 0;
-    max-width: 16ch;
+    font-size: clamp(2.3rem, 6.2vw, 4.1rem); line-height: 1.04;
+    letter-spacing: -0.03em; font-weight: 800; margin: 22px 0 0; max-width: 16ch;
   }
   h1 .hl { color: var(--accent); }
   h1 .cursor {
-    display: inline-block;
-    width: 0.5ch; height: 0.86em;
-    background: var(--accent);
-    margin-left: 4px;
-    transform: translateY(0.08em);
-    animation: blink 1.15s steps(1) infinite;
+    display: inline-block; width: 0.5ch; height: 0.86em; background: var(--accent);
+    margin-left: 4px; transform: translateY(0.08em); animation: blink 1.15s steps(1) infinite;
   }
   @keyframes blink { 50% { opacity: 0; } }
-  .lede {
-    margin: 22px 0 0;
-    font-size: clamp(1.02rem, 1.6vw, 1.2rem);
-    color: var(--text-dim);
-    max-width: 56ch;
-  }
+  .lede { margin: 22px 0 0; font-size: clamp(1.02rem, 1.6vw, 1.2rem); color: var(--text-dim); max-width: 56ch; }
 
-  /* Pipeline motif — the throughline between the projects */
   .pipeline {
-    margin-top: 40px;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px 12px;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.88rem;
-    padding: 18px 20px;
-    background: linear-gradient(180deg, var(--surface), var(--panel));
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
+    margin-top: 40px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px 12px;
+    font-family: "IBM Plex Mono", monospace; font-size: 0.88rem;
+    padding: 18px 20px; background: linear-gradient(180deg, var(--surface), var(--panel));
+    border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow);
   }
   .pipeline .file { color: var(--text-dim); }
   .pipeline .tool {
-    color: var(--accent);
-    border: 1px solid var(--accent-line);
-    background: var(--accent-soft);
-    padding: 3px 9px;
-    border-radius: 6px;
-    font-weight: 500;
+    color: var(--accent); border: 1px solid var(--accent-line); background: var(--accent-soft);
+    padding: 3px 9px; border-radius: 6px; font-weight: 500;
   }
   .pipeline .tool.cool { color: var(--cool); border-color: var(--cool); background: var(--cool-soft); }
   .pipeline .arrow { color: var(--text-faint); }
   .pipeline .ok { color: var(--cool); }
 
   /* ── Projects ─────────────────────────────────────────── */
-  .section-head {
-    display: flex;
-    align-items: baseline;
-    gap: 14px;
-    margin: clamp(40px, 7vh, 72px) 0 22px;
-  }
-  .section-head h2 {
-    font-size: 1.05rem;
-    font-weight: 600;
-    margin: 0;
-    letter-spacing: -0.01em;
-  }
+  .section-head { display: flex; align-items: baseline; gap: 14px; margin: clamp(40px, 7vh, 72px) 0 22px; }
+  .section-head h2 { font-size: 1.05rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
   .section-head .rule { flex: 1; height: 1px; background: var(--border); }
   .section-head .count { font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; color: var(--text-faint); }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap: 18px;
-    padding-bottom: 10px;
-  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 18px; padding-bottom: 10px; }
   .card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    padding: 26px 24px 22px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    text-decoration: none;
-    color: inherit;
-    overflow: hidden;
-    transition: transform .22s cubic-bezier(.2,.7,.3,1), border-color .22s, background .22s;
+    position: relative; display: flex; flex-direction: column; padding: 26px 24px 22px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    text-decoration: none; color: inherit; overflow: hidden;
+    transition: transform .22s cubic-bezier(.2,.7,.3,1), border-color .22s, background .22s, box-shadow .22s;
   }
-  /* corner trace */
   .card::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0;
-    width: 38px; height: 38px;
-    border-top: 1.5px solid var(--accent-line);
-    border-left: 1.5px solid var(--accent-line);
-    border-top-left-radius: 14px;
-    opacity: 0;
-    transition: opacity .22s;
+    content: ""; position: absolute; top: 0; left: 0; width: 38px; height: 38px;
+    border-top: 1.5px solid var(--accent-line); border-left: 1.5px solid var(--accent-line);
+    border-top-left-radius: 14px; opacity: 0; transition: opacity .22s;
   }
-  .card:hover { transform: translateY(-4px); border-color: var(--border-hi); background: var(--surface-hi); }
+  .card:hover { transform: translateY(-4px); border-color: var(--border-hi); background: var(--surface-hi); box-shadow: var(--shadow); }
   .card:hover::before { opacity: 1; }
   .card.ghost { border-style: dashed; cursor: default; }
-  .card.ghost:hover { transform: none; border-color: var(--border); background: var(--surface); }
+  .card.ghost:hover { transform: none; border-color: var(--border); background: var(--surface); box-shadow: none; }
 
   .card .idx {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.74rem;
-    color: var(--text-faint);
-    letter-spacing: 0.04em;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    font-family: "IBM Plex Mono", monospace; font-size: 0.74rem; color: var(--text-faint);
+    letter-spacing: 0.04em; display: flex; justify-content: space-between; align-items: center;
   }
   .card .idx .kind { color: var(--accent); }
   .card.cool .idx .kind { color: var(--cool); }
-  .card h3 {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 1.32rem;
-    letter-spacing: -0.02em;
-    margin: 16px 0 0;
-    font-weight: 600;
-  }
-  .card p {
-    margin: 11px 0 0;
-    color: var(--text-dim);
-    font-size: 0.94rem;
-  }
+  .card h3 { font-family: "IBM Plex Mono", monospace; font-size: 1.32rem; letter-spacing: -0.02em; margin: 16px 0 0; font-weight: 600; }
+  .card p { margin: 11px 0 0; color: var(--text-dim); font-size: 0.94rem; }
   .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
-  .tag {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.72rem;
-    color: var(--text-dim);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 3px 10px;
-  }
-  .card .go {
-    margin-top: 20px;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.86rem;
-    color: var(--accent);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .tag { font-family: "IBM Plex Mono", monospace; font-size: 0.72rem; color: var(--text-dim); border: 1px solid var(--border); border-radius: 999px; padding: 3px 10px; }
+  .card .go { margin-top: 20px; font-family: "IBM Plex Mono", monospace; font-size: 0.86rem; color: var(--accent); display: inline-flex; align-items: center; gap: 8px; }
   .card.cool .go { color: var(--cool); }
   .card .go .ar { transition: transform .22s; }
   .card:hover .go .ar { transform: translateX(5px); }
   .card.ghost .go { color: var(--text-faint); }
 
   /* ── Footer ───────────────────────────────────────────── */
-  footer {
-    margin-top: clamp(50px, 9vh, 96px);
-    border-top: 1px solid var(--border);
-    padding: 30px 0 48px;
-  }
-  .foot {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px 24px;
-    align-items: center;
-    justify-content: space-between;
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 0.8rem;
-    color: var(--text-faint);
-  }
+  footer { margin-top: clamp(50px, 9vh, 96px); border-top: 1px solid var(--border); padding: 30px 0 48px; }
+  .foot { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; justify-content: space-between; font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; color: var(--text-faint); }
   .foot a { color: var(--text-dim); text-decoration: none; transition: color .15s; }
   .foot a:hover { color: var(--accent); }
   .foot .links { display: flex; gap: 20px; }
 
-  /* ── Load animation ───────────────────────────────────── */
   @media (prefers-reduced-motion: no-preference) {
     .reveal { opacity: 0; transform: translateY(14px); animation: rise .7s cubic-bezier(.2,.7,.3,1) forwards; }
     @keyframes rise { to { opacity: 1; transform: none; } }
@@ -368,13 +224,13 @@
   <header>
     <div class="wrap nav">
       <a class="brand" href="/" aria-label="PyMCU documentation home">
-        <span class="chip" aria-hidden="true"></span>
+        <svg class="mark" viewBox="0 0 128 128" fill="currentColor" aria-hidden="true"><path d="M50.4 78.5a75.1 75.1 0 0 0-28.5 6.9l24.2-65.7c.7-2 1.9-3.2 3.4-3.2h29c1.5 0 2.7 1.2 3.4 3.2l24.2 65.7s-11.6-7-28.5-7L67 45.5c-.4-1.7-1.6-2.8-2.9-2.8-1.3 0-2.5 1.1-2.9 2.7L50.4 78.5Zm-1.1 28.2Zm-4.2-20.2c-2 6.6-.6 15.8 4.2 20.2a17.5 17.5 0 0 1 .2-.7 5.5 5.5 0 0 1 5.7-4.5c2.8.1 4.3 1.5 4.7 4.7.2 1.1.2 2.3.2 3.5v.4c0 2.7.7 5.2 2.2 7.4a13 13 0 0 0 5.7 4.9v-.3l-.2-.3c-1.8-5.6-.5-9.5 4.4-12.8l1.5-1a73 73 0 0 0 3.2-2.2 16 16 0 0 0 6.8-11.4c.3-2 .1-4-.6-6l-.8.6-1.6 1a37 37 0 0 1-22.4 2.7c-5-.7-9.7-2-13.2-6.2Z"/></svg>
         <span>py<b>mcu</b><span class="slash">/</span>docs</span>
       </a>
       <nav class="nav-right" aria-label="Primary">
         <a class="nav-link hide-sm" href="/pymcu/">Compiler</a>
         <a class="nav-link hide-sm" href="/rp2040sharp/">Emulators</a>
-        <a class="nav-link gh" href="https://github.com/PyMCU" rel="noopener">GitHub ↗</a>
+        <a class="nav-link" href="https://github.com/PyMCU" rel="noopener">GitHub ↗</a>
         <button class="toggle" id="theme" type="button" aria-label="Toggle color theme">
           <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
           <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
@@ -463,8 +319,7 @@
       } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
         root.setAttribute("data-theme", "light");
       }
-      var btn = document.getElementById("theme");
-      btn.addEventListener("click", function () {
+      document.getElementById("theme").addEventListener("click", function () {
         var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
         root.setAttribute("data-theme", next);
         try { localStorage.setItem(key, next); } catch (e) {}
