@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PyMCU — Documentation</title>
+<meta name="description" content="PyMCU — Python to bare-metal firmware, and the tools around it. Documentation for the PyMCU compiler and the RP2040Sharp emulator." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0f12'/%3E%3Crect x='9' y='9' width='14' height='14' rx='2' fill='none' stroke='%23ff8c3b' stroke-width='2'/%3E%3Cpath d='M6 13h3M6 19h3M23 13h3M23 19h3M13 6v3M19 6v3M13 23v3M19 23v3' stroke='%23ff8c3b' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0f12;
+    --bg-grid: rgba(120, 150, 170, 0.045);
+    --panel: #11161b;
+    --surface: #141a20;
+    --surface-hi: #1a222a;
+    --border: #222c35;
+    --border-hi: #324151;
+    --text: #e7edf3;
+    --text-dim: #9aa8b4;
+    --text-faint: #5d6b77;
+    --accent: #ff8c3b;
+    --accent-deep: #ff7a18;
+    --accent-soft: rgba(255, 140, 59, 0.13);
+    --accent-line: rgba(255, 140, 59, 0.35);
+    --cool: #58cfc4;
+    --cool-soft: rgba(88, 207, 196, 0.12);
+    --glow: radial-gradient(60% 70% at 50% 0%, rgba(255, 140, 59, 0.10), transparent 70%);
+    --shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 18px 40px -20px rgba(0,0,0,0.8);
+    color-scheme: dark;
+  }
+  [data-theme="light"] {
+    --bg: #f3efe6;
+    --bg-grid: rgba(40, 50, 60, 0.05);
+    --panel: #ece7db;
+    --surface: #fbf9f3;
+    --surface-hi: #fffdf8;
+    --border: #ddd5c4;
+    --border-hi: #c8bda6;
+    --text: #171c21;
+    --text-dim: #56616b;
+    --text-faint: #8a8473;
+    --accent: #d2601a;
+    --accent-deep: #b84e12;
+    --accent-soft: rgba(210, 96, 26, 0.10);
+    --accent-line: rgba(210, 96, 26, 0.35);
+    --cool: #11756c;
+    --cool-soft: rgba(17, 117, 108, 0.10);
+    --glow: radial-gradient(60% 70% at 50% 0%, rgba(210, 96, 26, 0.08), transparent 70%);
+    --shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 16px 36px -22px rgba(80,60,30,0.4);
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+  /* PCB blueprint grid + warm glow */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background-image:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(120% 90% at 50% 0%, #000 35%, transparent 90%);
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--glow);
+    pointer-events: none;
+  }
+
+  ::selection { background: var(--accent-soft); color: var(--accent); }
+  a { color: inherit; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .wrap { width: min(1080px, 92vw); margin: 0 auto; }
+
+  /* ── Header ───────────────────────────────────────────── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .brand .chip {
+    width: 22px; height: 22px; flex: none;
+    border: 1.8px solid var(--accent);
+    border-radius: 5px;
+    position: relative;
+  }
+  .brand .chip::before,
+  .brand .chip::after {
+    content: "";
+    position: absolute;
+    background: var(--accent);
+  }
+  .brand .chip::before { width: 1.8px; height: 5px; left: 50%; top: -6px; transform: translateX(-50%); box-shadow: -6px 0 var(--accent), 6px 0 var(--accent); }
+  .brand .chip::after  { width: 1.8px; height: 5px; left: 50%; bottom: -6px; transform: translateX(-50%); box-shadow: -6px 0 var(--accent), 6px 0 var(--accent); }
+  .brand b { color: var(--accent); font-weight: 600; }
+  .brand .slash { color: var(--text-faint); }
+  .nav-right { display: flex; align-items: center; gap: 8px; }
+  .nav-link {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 7px 11px;
+    border-radius: 7px;
+    transition: color .15s, background .15s;
+  }
+  .nav-link:hover { color: var(--text); background: var(--surface); }
+  .nav-link.gh { display: inline-flex; align-items: center; gap: 6px; }
+  @media (max-width: 620px) { .nav-link.hide-sm { display: none; } }
+
+  .toggle {
+    width: 34px; height: 34px;
+    display: grid; place-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: border-color .15s, color .15s, transform .15s;
+  }
+  .toggle:hover { color: var(--accent); border-color: var(--border-hi); }
+  .toggle:active { transform: scale(0.92); }
+  .toggle .sun { display: none; }
+  [data-theme="light"] .toggle .moon { display: none; }
+  [data-theme="light"] .toggle .sun { display: block; }
+
+  /* ── Hero ─────────────────────────────────────────────── */
+  .hero { padding: clamp(56px, 11vh, 120px) 0 clamp(40px, 6vh, 64px); }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.76rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 26px; height: 1px;
+    background: var(--accent-line);
+  }
+  h1 {
+    font-size: clamp(2.3rem, 6.2vw, 4.1rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    font-weight: 700;
+    margin: 22px 0 0;
+    max-width: 16ch;
+  }
+  h1 .hl { color: var(--accent); }
+  h1 .cursor {
+    display: inline-block;
+    width: 0.5ch; height: 0.86em;
+    background: var(--accent);
+    margin-left: 4px;
+    transform: translateY(0.08em);
+    animation: blink 1.15s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .lede {
+    margin: 22px 0 0;
+    font-size: clamp(1.02rem, 1.6vw, 1.2rem);
+    color: var(--text-dim);
+    max-width: 56ch;
+  }
+
+  /* Pipeline motif — the throughline between the projects */
+  .pipeline {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 12px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.88rem;
+    padding: 18px 20px;
+    background: linear-gradient(180deg, var(--surface), var(--panel));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+  }
+  .pipeline .file { color: var(--text-dim); }
+  .pipeline .tool {
+    color: var(--accent);
+    border: 1px solid var(--accent-line);
+    background: var(--accent-soft);
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-weight: 500;
+  }
+  .pipeline .tool.cool { color: var(--cool); border-color: var(--cool); background: var(--cool-soft); }
+  .pipeline .arrow { color: var(--text-faint); }
+  .pipeline .ok { color: var(--cool); }
+
+  /* ── Projects ─────────────────────────────────────────── */
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin: clamp(40px, 7vh, 72px) 0 22px;
+  }
+  .section-head h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .section-head .rule { flex: 1; height: 1px; background: var(--border); }
+  .section-head .count { font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; color: var(--text-faint); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 18px;
+    padding-bottom: 10px;
+  }
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 26px 24px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    text-decoration: none;
+    color: inherit;
+    overflow: hidden;
+    transition: transform .22s cubic-bezier(.2,.7,.3,1), border-color .22s, background .22s;
+  }
+  /* corner trace */
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 38px; height: 38px;
+    border-top: 1.5px solid var(--accent-line);
+    border-left: 1.5px solid var(--accent-line);
+    border-top-left-radius: 14px;
+    opacity: 0;
+    transition: opacity .22s;
+  }
+  .card:hover { transform: translateY(-4px); border-color: var(--border-hi); background: var(--surface-hi); }
+  .card:hover::before { opacity: 1; }
+  .card.ghost { border-style: dashed; cursor: default; }
+  .card.ghost:hover { transform: none; border-color: var(--border); background: var(--surface); }
+
+  .card .idx {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.74rem;
+    color: var(--text-faint);
+    letter-spacing: 0.04em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card .idx .kind { color: var(--accent); }
+  .card.cool .idx .kind { color: var(--cool); }
+  .card h3 {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 1.32rem;
+    letter-spacing: -0.02em;
+    margin: 16px 0 0;
+    font-weight: 600;
+  }
+  .card p {
+    margin: 11px 0 0;
+    color: var(--text-dim);
+    font-size: 0.94rem;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
+  .tag {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+  .card .go {
+    margin-top: 20px;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.86rem;
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card.cool .go { color: var(--cool); }
+  .card .go .ar { transition: transform .22s; }
+  .card:hover .go .ar { transform: translateX(5px); }
+  .card.ghost .go { color: var(--text-faint); }
+
+  /* ── Footer ───────────────────────────────────────────── */
+  footer {
+    margin-top: clamp(50px, 9vh, 96px);
+    border-top: 1px solid var(--border);
+    padding: 30px 0 48px;
+  }
+  .foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+    align-items: center;
+    justify-content: space-between;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.8rem;
+    color: var(--text-faint);
+  }
+  .foot a { color: var(--text-dim); text-decoration: none; transition: color .15s; }
+  .foot a:hover { color: var(--accent); }
+  .foot .links { display: flex; gap: 20px; }
+
+  /* ── Load animation ───────────────────────────────────── */
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { opacity: 0; transform: translateY(14px); animation: rise .7s cubic-bezier(.2,.7,.3,1) forwards; }
+    @keyframes rise { to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="/" aria-label="PyMCU documentation home">
+        <span class="chip" aria-hidden="true"></span>
+        <span>py<b>mcu</b><span class="slash">/</span>docs</span>
+      </a>
+      <nav class="nav-right" aria-label="Primary">
+        <a class="nav-link hide-sm" href="/pymcu/">Compiler</a>
+        <a class="nav-link hide-sm" href="/rp2040sharp/">Emulators</a>
+        <a class="nav-link gh" href="https://github.com/PyMCU" rel="noopener">GitHub ↗</a>
+        <button class="toggle" id="theme" type="button" aria-label="Toggle color theme">
+          <svg class="moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <p class="eyebrow reveal" style="animation-delay:.02s">Documentation</p>
+      <h1 class="reveal" style="animation-delay:.08s">Python to <span class="hl">bare-metal firmware</span>, and the tools around it<span class="cursor" aria-hidden="true"></span></h1>
+      <p class="lede reveal" style="animation-delay:.16s">
+        PyMCU compiles a statically-typed, allocation-free subset of Python straight to
+        microcontroller machine code — and ships the toolchain to build, run, and verify it.
+        This is the documentation hub.
+      </p>
+
+      <div class="pipeline reveal" style="animation-delay:.24s" aria-label="The PyMCU toolchain pipeline">
+        <span class="file">main.py</span>
+        <span class="arrow">──▶</span>
+        <span class="tool">pymcu</span>
+        <span class="arrow">──▶</span>
+        <span class="file">firmware.hex</span>
+        <span class="arrow">──▶</span>
+        <span class="tool cool">rp2040sharp</span>
+        <span class="arrow">──▶</span>
+        <span class="ok">✓ verified</span>
+      </div>
+    </section>
+
+    <div class="section-head reveal" style="animation-delay:.30s">
+      <h2>Projects</h2>
+      <span class="rule" aria-hidden="true"></span>
+      <span class="count">02 + growing</span>
+    </div>
+
+    <section class="grid" aria-label="Projects">
+      <a class="card reveal" href="/pymcu/" style="animation-delay:.34s">
+        <span class="idx"><span>01</span><span class="kind">compiler</span></span>
+        <h3>PyMCU</h3>
+        <p>A statically-typed, allocation-free subset of Python compiled directly to
+           bare-metal MCU machine code — no runtime, no interpreter, no VM.</p>
+        <div class="tags"><span class="tag">Python</span><span class="tag">AVR</span><span class="tag">native</span></div>
+        <span class="go">Read the docs <span class="ar">→</span></span>
+      </a>
+
+      <a class="card cool reveal" href="/rp2040sharp/" style="animation-delay:.40s">
+        <span class="idx"><span>02</span><span class="kind">emulator</span></span>
+        <h3>RP2040Sharp</h3>
+        <p>A high-performance Raspberry Pi RP2040 emulator in C# (.NET 10) that runs real
+           firmware — including MicroPython — and serves as PyMCU's deterministic testkit.</p>
+        <div class="tags"><span class="tag">C# · .NET 10</span><span class="tag">RP2040</span><span class="tag">testkit</span></div>
+        <span class="go">Read the docs <span class="ar">→</span></span>
+      </a>
+
+      <div class="card ghost reveal" style="animation-delay:.46s" aria-disabled="true">
+        <span class="idx"><span>03</span><span class="kind">emulator</span></span>
+        <h3>AVR8Sharp</h3>
+        <p>An ATmega / AVR8 emulator for testing PyMCU's primary target family. Documentation
+           lands here as the project matures.</p>
+        <div class="tags"><span class="tag">C#</span><span class="tag">ATmega328P</span></div>
+        <span class="go">Coming soon</span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <span>© 2026 PyMCU · MIT licensed</span>
+      <span class="links">
+        <a href="https://github.com/PyMCU" rel="noopener">github.com/PyMCU ↗</a>
+        <a href="https://pypi.org/project/pymcu-compiler/" rel="noopener">pypi ↗</a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var key = "pymcu-docs-theme";
+      var saved = null;
+      try { saved = localStorage.getItem(key); } catch (e) {}
+      if (saved === "light" || saved === "dark") {
+        root.setAttribute("data-theme", saved);
+      } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+        root.setAttribute("data-theme", "light");
+      }
+      var btn = document.getElementById("theme");
+      btn.addEventListener("click", function () {
+        var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+        root.setAttribute("data-theme", next);
+        try { localStorage.setItem(key, next); } catch (e) {}
+      });
+    })();
+  </script>
+</body>
+</html>
