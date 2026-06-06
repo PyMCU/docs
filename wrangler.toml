@@ -1,3 +1,17 @@
 name = "pymcu-docs-hub"
+main = "src/index.js"
 compatibility_date = "2025-06-01"
-pages_build_output_dir = "site"
+
+# Static landing page. Assets are served first; the worker (src/index.js) runs for any
+# path without a matching file — i.e. the project sub-paths it reverse-proxies.
+[assets]
+directory = "./site"
+binding = "ASSETS"
+
+# Target URL of each project's Worker. Set these to the deployed Workers' URLs
+# (e.g. https://rp2040sharp-docs.<your-subdomain>.workers.dev, or a custom domain).
+# Until set correctly, the hub still deploys and serves the landing; the sub-paths
+# resolve once these point at live deployments.
+[vars]
+PYMCU_DOCS_URL = "https://pymcu-docs.workers.dev"
+RP2040SHARP_DOCS_URL = "https://rp2040sharp-docs.workers.dev"
