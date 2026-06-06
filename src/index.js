@@ -7,17 +7,16 @@
  *     project's own Worker.
  *
  *   docs.pymcu.org/               → landing (Static Assets)
- *   docs.pymcu.org/pymcu/*        → env.PYMCU_DOCS_URL
  *   docs.pymcu.org/rp2040sharp/*  → env.RP2040SHARP_DOCS_URL
+ *   docs.pymcu.org/avr8sharp/*    → env.AVR8SHARP_DOCS_URL
  *
- * Target URLs are configured as vars in wrangler.toml so the hub can deploy before the
- * project Workers exist. Each project's docs are built with
+ * Target URLs are configured as vars in wrangler.toml. Each project's docs are built with
  * html_baseurl = https://docs.pymcu.org/<name>/ and relative links, so they render
- * correctly under the sub-path.
+ * correctly under the sub-path. (The PyMCU compiler docs are not published yet.)
  */
 const PROJECT_VARS = {
-  pymcu: "PYMCU_DOCS_URL",
   rp2040sharp: "RP2040SHARP_DOCS_URL",
+  avr8sharp: "AVR8SHARP_DOCS_URL",
 };
 
 export default {

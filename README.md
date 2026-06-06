@@ -8,9 +8,10 @@ Cloudflare Worker. This repo hosts the landing page and a worker that reverse-pr
 sub-path to each project:
 
 ```
-docs.pymcu.org/               → landing            (this repo)
-docs.pymcu.org/pymcu/         → PyMCU compiler      (PyMCU/PyMCU       → pymcu-docs)
+docs.pymcu.org/               → landing             (this repo)
 docs.pymcu.org/rp2040sharp/   → RP2040Sharp emulator (PyMCU/RP2040Sharp → rp2040sharp-docs)
+docs.pymcu.org/avr8sharp/     → AVR8Sharp emulator   (PyMCU/AVR8Sharp   → avr8sharp-docs)
+docs.pymcu.org/pymcu/         → PyMCU compiler        (coming soon)
 ```
 
 ## Layout
