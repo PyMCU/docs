@@ -203,6 +203,12 @@
   }
   .card .idx .kind { color: var(--accent); }
   .card.cool .idx .kind { color: var(--cool); }
+  .card .badge {
+    font-style: normal; margin-left: 8px; padding: 1px 8px; vertical-align: middle;
+    border-radius: 999px; font-size: 0.66rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid var(--accent-line); background: var(--accent-soft);
+  }
   .card h3 { font-family: "IBM Plex Mono", monospace; font-size: 1.32rem; letter-spacing: -0.02em; margin: 16px 0 0; font-weight: 600; }
   .card p { margin: 11px 0 0; color: var(--text-dim); font-size: 0.94rem; }
   .tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
@@ -268,7 +274,7 @@
     <div class="section-head reveal" style="animation-delay:.30s">
       <h2>Projects</h2>
       <span class="rule" aria-hidden="true"></span>
-      <span class="count">02 live · 1 soon</span>
+      <span class="count">02 live · 1 alpha</span>
     </div>
 
     <section class="grid" aria-label="Projects">
@@ -290,14 +296,14 @@
         <span class="go">Read the docs <span class="ar">→</span></span>
       </a>
 
-      <div class="card ghost reveal" style="animation-delay:.46s" aria-disabled="true">
-        <span class="idx"><span>03</span><span class="kind">compiler</span></span>
+      <a class="card reveal" href="/pymcu/" style="animation-delay:.46s">
+        <span class="idx"><span>03</span><span class="kind">compiler <em class="badge">alpha</em></span></span>
         <h3>PyMCU</h3>
         <p>A statically-typed, allocation-free subset of Python compiled directly to
            bare-metal MCU machine code — no runtime, no interpreter, no VM.</p>
         <div class="tags"><span class="tag">Python</span><span class="tag">AVR</span><span class="tag">native</span></div>
-        <span class="go">Coming soon</span>
-      </div>
+        <span class="go">Read the docs <span class="ar">→</span></span>
+      </a>
     </section>
   </main>
 

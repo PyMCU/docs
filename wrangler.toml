@@ -9,8 +9,9 @@ directory = "./site"
 binding = "ASSETS"
 
 # Target URL of each published project's docs (Cloudflare Pages projects). Point these
-# at the live *.pages.dev URLs. (PyMCU compiler docs are not published yet — add a
-# PYMCU_DOCS_URL var and a PROJECT_VARS entry in src/index.js when they go live.)
+# at the live *.pages.dev URLs. If a Pages project uses a different name, update the URL
+# here (the hub redeploys and the sub-path proxy picks it up).
 [vars]
+PYMCU_DOCS_URL = "https://pymcu-docs.pages.dev"
 RP2040SHARP_DOCS_URL = "https://rp2040sharp-docs.pages.dev"
 AVR8SHARP_DOCS_URL = "https://avr8sharp-docs.pages.dev"
