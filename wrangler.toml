@@ -12,6 +12,6 @@ binding = "ASSETS"
 # at the live *.pages.dev URLs. If a Pages project uses a different name, update the URL
 # here (the hub redeploys and the sub-path proxy picks it up).
 [vars]
-PYMCU_DOCS_URL = "https://pymcu-docs.pages.dev"
+PYMCU_DOCS_URL = "https://pymcu-docs.ivan-montiel-c.workers.dev"
 RP2040SHARP_DOCS_URL = "https://rp2040sharp-docs.pages.dev"
 AVR8SHARP_DOCS_URL = "https://avr8sharp-docs.pages.dev"
