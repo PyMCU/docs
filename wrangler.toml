@@ -2,15 +2,8 @@ name = "pymcu-docs-hub"
 main = "src/index.js"
 compatibility_date = "2025-06-01"
 
-# Static landing page. Assets are served first; the worker (src/index.js) runs for any
-# path without a matching file — i.e. the project sub-paths it reverse-proxies.
-[assets]
-directory = "./site"
-binding = "ASSETS"
-
-# Target URL of each published project's docs (Cloudflare Pages projects). Point these
-# at the live *.pages.dev URLs. If a Pages project uses a different name, update the URL
-# here (the hub redeploys and the sub-path proxy picks it up).
+# Compiler docs worker (served at the root) and the emulator Pages projects
+# (still proxied at their legacy sub-paths until they move to docs.silicontwin.co).
 [vars]
 PYMCU_DOCS_URL = "https://pymcu-docs.ivan-montiel-c.workers.dev"
 RP2040SHARP_DOCS_URL = "https://rp2040sharp-docs.pages.dev"

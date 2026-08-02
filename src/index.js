@@ -1,65 +1,70 @@
 /**
- * Worker for docs.pymcu.org — the documentation hub (docs.astral.sh model).
+ * Worker for docs.pymcu.org — the PyMCU compiler documentation.
  *
- * Deployed as a Worker with Static Assets:
- *   - the landing page in ../site is served directly (assets-first);
- *   - any other path is handled here, reverse-proxying project sub-paths to each
- *     project's own Worker.
+ *   docs.pymcu.org/*              → env.PYMCU_DOCS_URL (path passed through 1:1)
+ *   docs.pymcu.org/pymcu/*        → 301 to the same path at the root (legacy prefix)
+ *   docs.pymcu.org/rp2040sharp/*  → env.RP2040SHARP_DOCS_URL (until docs.silicontwin.co)
+ *   docs.pymcu.org/avr8sharp/*    → env.AVR8SHARP_DOCS_URL   (until docs.silicontwin.co)
  *
- *   docs.pymcu.org/               → landing (Static Assets)
- *   docs.pymcu.org/pymcu/*        → env.PYMCU_DOCS_URL
- *   docs.pymcu.org/rp2040sharp/*  → env.RP2040SHARP_DOCS_URL
- *   docs.pymcu.org/avr8sharp/*    → env.AVR8SHARP_DOCS_URL
- *
- * Target URLs are configured as vars in wrangler.toml. Each project's docs are built with
- * html_baseurl = https://docs.pymcu.org/<name>/ and relative links, so they render
- * correctly under the sub-path.
+ * The compiler docs moved from the /pymcu/ sub-path to the domain root; the old
+ * multi-project hub landing is gone. The emulator sub-paths keep reverse-proxying
+ * to their Pages projects until they move to docs.silicontwin.co, at which point
+ * their entries here become redirects (or disappear).
  */
-const PROJECT_VARS = {
-  pymcu: "PYMCU_DOCS_URL",
+const EMULATOR_VARS = {
   rp2040sharp: "RP2040SHARP_DOCS_URL",
   avr8sharp: "AVR8SHARP_DOCS_URL",
 };
+
+function proxyHeaders(upstream, base, prefix) {
+  const headers = new Headers(upstream.headers);
+  const location = headers.get("location");
+  if (location) {
+    try {
+      const loc = new URL(location, base);
+      if (loc.origin === new URL(base).origin) {
+        headers.set("location", `${prefix}${loc.pathname}${loc.search}`);
+      }
+    } catch { /* leave as-is */ }
+  }
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  return headers;
+}
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const segment = url.pathname.split("/")[1];
-    const origin = PROJECT_VARS[segment] ? env[PROJECT_VARS[segment]] : null;
 
-    // Not a configured project sub-path → serve the hub landing / assets.
-    if (!origin) {
-      return env.ASSETS.fetch(request);
+    // Legacy /pymcu/ prefix → permanent redirect to the root path.
+    if (segment === "pymcu") {
+      const rest = url.pathname.slice("/pymcu".length) || "/";
+      return Response.redirect(`${url.origin}${rest}${url.search}`, 301);
     }
 
-    // Bare "/<project>" → redirect to "/<project>/" so relative links resolve.
-    if (url.pathname === `/${segment}`) {
-      return Response.redirect(`${url.origin}/${segment}/`, 308);
+    // Emulator sub-paths: same stripped-prefix reverse proxy as before.
+    if (EMULATOR_VARS[segment]) {
+      if (url.pathname === `/${segment}`) {
+        return Response.redirect(`${url.origin}/${segment}/`, 308);
+      }
+      const base = env[EMULATOR_VARS[segment]].replace(/\/+$/, "");
+      const rest = url.pathname.slice(("/" + segment).length) || "/";
+      const upstream = await fetch(base + rest + url.search, request);
+      return new Response(upstream.body, {
+        status: upstream.status,
+        statusText: upstream.statusText,
+        headers: proxyHeaders(upstream, base, `/${segment}`),
+      });
     }
 
-    // Strip the "/<project>" prefix and proxy to that project's Worker.
-    const base = origin.replace(/\/+$/, "");
-    const rest = url.pathname.slice(("/" + segment).length) || "/";
-    const upstream = await fetch(base + rest + url.search, request);
-
-    const headers = new Headers(upstream.headers);
-    // Keep any upstream redirect inside docs.pymcu.org/<project>/.
-    const location = headers.get("location");
-    if (location) {
-      try {
-        const loc = new URL(location, base);
-        if (loc.origin === new URL(base).origin) {
-          headers.set("location", `/${segment}${loc.pathname}${loc.search}`);
-        }
-      } catch { /* leave as-is */ }
-    }
-    headers.set("X-Content-Type-Options", "nosniff");
-    headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-
+    // Everything else — including the root — is the compiler documentation.
+    const base = env.PYMCU_DOCS_URL.replace(/\/+$/, "");
+    const upstream = await fetch(base + url.pathname + url.search, request);
     return new Response(upstream.body, {
       status: upstream.status,
       statusText: upstream.statusText,
-      headers,
+      headers: proxyHeaders(upstream, base, ""),
     });
   },
 };
